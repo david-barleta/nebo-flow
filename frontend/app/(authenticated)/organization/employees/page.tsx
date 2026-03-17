@@ -1,0 +1,9 @@
+"use client";
+
+import PlaceholderPage from "@/components/layout/placeholder-page";
+
+const breadcrumbs = [{ label: "Organization" }, { label: "Employees" }];
+
+export default function Page() {
+  return <PlaceholderPage title="Employees" breadcrumbs={breadcrumbs} />;
+}

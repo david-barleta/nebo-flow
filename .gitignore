@@ -62,3 +62,12 @@ Thumbs.db
 dist/
 build/
 *.pyc
+
+# -----------------------------------------------------------------------------
+# AI tool context
+# -----------------------------------------------------------------------------
+# CLAUDE.md contains project context (database schema, architecture notes) that
+# Claude Code reads automatically. It's not application code — it's like a
+# personal notepad for the AI assistant.
+# -----------------------------------------------------------------------------
+CLAUDE.md
