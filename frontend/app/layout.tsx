@@ -26,6 +26,9 @@ import "./globals.css";
 // Auth context wraps the entire app so any component can access user state
 import { AuthProvider } from "@/contexts/auth-context";
 
+// Toast notifications (sonner)
+import { Toaster } from "sonner";
+
 // Initialize the fonts with configuration options.
 // "variable" creates a CSS custom property (e.g., --font-geist-sans) so we can
 // reference these fonts in Tailwind or CSS. "subsets" limits to Latin characters
@@ -70,6 +73,7 @@ export default function RootLayout({
       >
         {/* AuthProvider makes auth state available to all pages/components */}
         <AuthProvider>{children}</AuthProvider>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );
