@@ -1,0 +1,64 @@
+# =============================================================================
+# ROOT .gitignore — Nebo Flow
+# =============================================================================
+# This file tells Git which files/folders to ignore across the entire project.
+# Patterns here apply to both the frontend/ and backend/ directories.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Dependencies
+# -----------------------------------------------------------------------------
+# These folders contain third-party packages installed by package managers.
+# They are HUGE (node_modules can be 500MB+) and fully reproducible — anyone
+# can recreate them by running "npm install" or "pip install -r requirements.txt".
+# Never commit dependencies; only commit the lockfiles (package-lock.json, etc.).
+# -----------------------------------------------------------------------------
+node_modules/
+venv/
+__pycache__/
+
+# -----------------------------------------------------------------------------
+# Environment variables (SECURITY-CRITICAL)
+# -----------------------------------------------------------------------------
+# .env files contain secrets like API keys, database passwords, and tokens.
+# If these get pushed to GitHub, anyone can access your Supabase database,
+# impersonate your app, or steal user data. This is the #1 reason .gitignore
+# exists. Each developer/environment keeps their own local copy of these files.
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# -----------------------------------------------------------------------------
+# OS-generated files
+# -----------------------------------------------------------------------------
+# macOS creates .DS_Store in every folder you open in Finder (stores folder
+# view preferences). Windows creates Thumbs.db for image thumbnails.
+# These are useless clutter that vary per developer's machine.
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------------------------------------------------------
+# IDE / Editor configuration
+# -----------------------------------------------------------------------------
+# .vscode/ and .idea/ store personal editor settings (font size, themes,
+# debug configs, extensions). Each developer has their own preferences,
+# so these don't belong in the shared repo.
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+
+# -----------------------------------------------------------------------------
+# Build outputs
+# -----------------------------------------------------------------------------
+# These folders are generated when you build the app for production.
+# .next/ is Next.js's build cache and compiled output.
+# dist/ and build/ are common output folders for various build tools.
+# *.pyc files are Python's compiled bytecode (auto-generated from .py files).
+# All of these are reproducible from source code — just run the build again.
+# -----------------------------------------------------------------------------
+.next/
+dist/
+build/
+*.pyc
