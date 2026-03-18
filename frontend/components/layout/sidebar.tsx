@@ -76,7 +76,7 @@ const menuDefinition: MenuItem[] = [
       { key: "suppliers", label: "Suppliers", href: "/organization/suppliers", icon: UserCheck },
       { key: "employees", label: "Employees", href: "/organization/employees", icon: Briefcase },
       { key: "owners", label: "Partners / Stockholders", href: "/organization/owners", icon: Users, ownershipItem: true },
-      { key: "items", label: "Items & Services", href: "/organization/items", icon: Package },
+      { key: "items", label: "Items & Services", href: "/organization/items", icon: Package, featureKey: "items_catalog" },
     ],
   },
   {
