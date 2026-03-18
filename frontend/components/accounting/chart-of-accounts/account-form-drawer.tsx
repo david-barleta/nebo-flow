@@ -11,7 +11,7 @@ import { createAccount, updateAccount, logAuditEntry } from "@/lib/accounts/quer
 interface AccountFormDrawerProps {
   open: boolean;
   onClose: () => void;
-  onSaved: () => void;
+  onSaved: () => void | Promise<void>;
   editAccount: Account | null; // null = create mode
   allAccounts: Account[];
   defaultIsHeader?: boolean;
@@ -43,6 +43,8 @@ export default function AccountFormDrawer({
   // Reset form when opening
   useEffect(() => {
     if (!open) return;
+
+    setSaving(false);
 
     if (editAccount) {
       setAccountType(editAccount.account_type);
@@ -208,7 +210,7 @@ export default function AccountFormDrawer({
         toast.success(`Account "${label}" created.`);
       }
 
-      onSaved();
+      await onSaved();
       onClose();
     } catch (err: unknown) {
       const message =

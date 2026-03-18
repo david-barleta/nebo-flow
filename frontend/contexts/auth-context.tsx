@@ -64,20 +64,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 async function fetchAuthUser(authUserId: string): Promise<AuthUser | null> {
   const supabase = createClient();
 
+  console.log("[fetchAuthUser] Looking up auth_user_id:", authUserId);
+
   // Fetch user record that matches this Supabase auth ID
   const { data: user, error: userError } = await supabase
     .from("users")
     .select("*")
     .eq("auth_user_id", authUserId)
-    .single();
+    .maybeSingle();
+
+  console.log("[fetchAuthUser] user query result:", { user, userError });
 
   if (userError || !user) return null;
 
   // Fetch the entity and role in parallel for speed
   const [entityResult, roleResult] = await Promise.all([
-    supabase.from("entities").select("*").eq("id", user.entity_id).single(),
-    supabase.from("roles").select("*").eq("id", user.role_id).single(),
+    supabase.from("entities").select("*").eq("id", user.entity_id).maybeSingle(),
+    supabase.from("roles").select("*").eq("id", user.role_id).maybeSingle(),
   ]);
+
+  console.log("[fetchAuthUser] entity:", entityResult.data, entityResult.error);
+  console.log("[fetchAuthUser] role:", roleResult.data, roleResult.error);
 
   if (entityResult.error || roleResult.error) return null;
 
@@ -99,7 +106,8 @@ async function fetchAuthUser(authUserId: string): Promise<AuthUser | null> {
     entity: {
       id: entityResult.data.id,
       entityCode: entityResult.data.entity_code,
-      name: entityResult.data.name,
+      registeredName: entityResult.data.registered_name,
+      tradeName: entityResult.data.trade_name,
       address: entityResult.data.address,
       tin: entityResult.data.tin,
       phone: entityResult.data.phone,

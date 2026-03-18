@@ -12,7 +12,8 @@
 export interface Entity {
   id: string;
   entityCode: string;
-  name: string;
+  registeredName: string;
+  tradeName: string | null;
   address: string | null;
   tin: string | null;
   phone: string | null;

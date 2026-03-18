@@ -44,7 +44,7 @@ export default function TopHeader() {
       <div className="flex items-center gap-4">
         {/* Entity name */}
         <span className="hidden sm:block text-sm text-gray-500">
-          {authUser?.entity.name}
+          {authUser?.entity.tradeName || authUser?.entity.registeredName}
         </span>
 
         {/* User dropdown */}
@@ -75,7 +75,7 @@ export default function TopHeader() {
               <div className="px-3 py-2 border-b border-gray-100 sm:hidden">
                 <p className="text-sm font-medium text-gray-900">{authUser?.user.fullName}</p>
                 <p className="text-xs text-gray-500">{authUser?.role.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{authUser?.entity.name}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{authUser?.entity.tradeName || authUser?.entity.registeredName}</p>
               </div>
               <button
                 onClick={handleLogout}
