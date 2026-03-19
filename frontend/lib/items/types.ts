@@ -8,6 +8,8 @@ export type TaxTreatment = "vatable" | "vat_exempt" | "zero_rated";
 
 export type PurchaseCategory = "services" | "capital_goods" | "other_than_capital_goods";
 
+export type PriceEntryMode = "vat_exclusive" | "vat_inclusive";
+
 export interface Item {
   id: string;
   entity_id: string;
@@ -19,6 +21,8 @@ export interface Item {
   default_purchase_account_id: string | null;
   default_tax_treatment: TaxTreatment;
   default_purchase_category: PurchaseCategory | null;
+  default_price_entry_mode: PriceEntryMode;
+  default_ewt_rate_id: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -40,6 +44,11 @@ export const PURCHASE_CATEGORY_LABELS: Record<PurchaseCategory, string> = {
   services: "Services",
   capital_goods: "Capital Goods",
   other_than_capital_goods: "Other than Capital Goods",
+};
+
+export const PRICE_ENTRY_MODE_LABELS: Record<PriceEntryMode, string> = {
+  vat_exclusive: "VAT Exclusive",
+  vat_inclusive: "VAT Inclusive",
 };
 
 /**

@@ -26,6 +26,7 @@ import {
   BookMarked,
   Repeat,
   Landmark,
+  Building,
   ArrowDownRight,
   ArrowUpRight,
   Scale,
@@ -123,6 +124,8 @@ const menuDefinition: MenuItem[] = [
       { key: "lock-dates", label: "Lock Dates", href: "/settings/lock-dates", icon: Lock },
       { key: "tax", label: "Tax Configuration", href: "/settings/tax", icon: Calculator },
       { key: "document-numbering", label: "Document Numbering", href: "/settings/document-numbering", icon: Hash },
+      { key: "system-accounts", label: "System Accounts", href: "/settings/system-accounts", icon: BookMarked },
+      { key: "bank-accounts", label: "Bank Accounts", href: "/settings/bank-accounts", icon: Building },
       { key: "approval-workflows", label: "Approval Workflows", href: "/settings/approval-workflows", icon: CheckSquare },
       { key: "setup-mode", label: "Setup Mode", href: "/settings/setup-mode", icon: Wrench },
     ],
@@ -194,7 +197,7 @@ export default function Sidebar() {
       .select("feature_key, is_enabled")
       .eq("entity_id", entityId)
       .eq("is_enabled", false)
-      .then(({ data }) => {
+      .then(({ data }: { data: { feature_key: string; is_enabled: boolean }[] | null }) => {
         if (data) {
           setDisabledFeatures(new Set(data.map((r) => r.feature_key)));
         }
@@ -205,7 +208,7 @@ export default function Sidebar() {
       .from("entity_labels")
       .select("entity_key, custom_label")
       .eq("entity_id", entityId)
-      .then(({ data }) => {
+      .then(({ data }: { data: { entity_key: string; custom_label: string }[] | null }) => {
         if (data) {
           const labels: Record<string, string> = {};
           for (const row of data) {

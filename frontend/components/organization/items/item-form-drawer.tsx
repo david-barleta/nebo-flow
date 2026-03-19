@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { X, Search } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
-import type { Item, ItemType, TaxTreatment, PurchaseCategory } from "@/lib/items/types";
-import { TAX_TREATMENT_LABELS, PURCHASE_CATEGORY_LABELS } from "@/lib/items/types";
+import type { Item, ItemType, TaxTreatment, PurchaseCategory, PriceEntryMode } from "@/lib/items/types";
+import { TAX_TREATMENT_LABELS, PURCHASE_CATEGORY_LABELS, PRICE_ENTRY_MODE_LABELS } from "@/lib/items/types";
 import {
   createItem,
   updateItem,
@@ -14,6 +14,8 @@ import {
 } from "@/lib/items/queries";
 import { fetchAccounts } from "@/lib/accounts/queries";
 import type { Account } from "@/lib/accounts/types";
+import { fetchEwtRates } from "@/lib/settings/ewt-queries";
+import type { EwtRate } from "@/lib/settings/ewt-types";
 
 interface ItemFormDrawerProps {
   open: boolean;
@@ -40,10 +42,13 @@ export default function ItemFormDrawer({
   const [defaultPurchaseAccountId, setDefaultPurchaseAccountId] = useState("");
   const [defaultTaxTreatment, setDefaultTaxTreatment] = useState<TaxTreatment>("vatable");
   const [defaultPurchaseCategory, setDefaultPurchaseCategory] = useState("");
+  const [defaultPriceEntryMode, setDefaultPriceEntryMode] = useState<PriceEntryMode>("vat_exclusive");
+  const [defaultEwtRateId, setDefaultEwtRateId] = useState("");
   const [saving, setSaving] = useState(false);
 
   // Account search state
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [ewtRates, setEwtRates] = useState<EwtRate[]>([]);
   const [salesSearch, setSalesSearch] = useState("");
   const [purchaseSearch, setPurchaseSearch] = useState("");
   const [salesDropdownOpen, setSalesDropdownOpen] = useState(false);
@@ -53,12 +58,18 @@ export default function ItemFormDrawer({
   const [nameError, setNameError] = useState("");
   const [priceError, setPriceError] = useState("");
 
-  // Load accounts
+  // Load accounts and EWT rates
   useEffect(() => {
     if (!open || !authUser) return;
-    fetchAccounts(authUser.entity.id)
-      .then(setAccounts)
-      .catch(() => toast.error("Failed to load accounts."));
+    Promise.all([
+      fetchAccounts(authUser.entity.id),
+      fetchEwtRates(authUser.entity.id),
+    ])
+      .then(([accts, rates]) => {
+        setAccounts(accts);
+        setEwtRates(rates);
+      })
+      .catch(() => toast.error("Failed to load reference data."));
   }, [open, authUser]);
 
   // Revenue accounts for sales (detail accounts only)
@@ -132,6 +143,8 @@ export default function ItemFormDrawer({
       setDefaultPurchaseAccountId(editItem.default_purchase_account_id || "");
       setDefaultTaxTreatment(editItem.default_tax_treatment);
       setDefaultPurchaseCategory(editItem.default_purchase_category || "");
+      setDefaultPriceEntryMode(editItem.default_price_entry_mode ?? "vat_exclusive");
+      setDefaultEwtRateId(editItem.default_ewt_rate_id || "");
     } else {
       setName("");
       setItemType("product");
@@ -141,6 +154,8 @@ export default function ItemFormDrawer({
       setDefaultPurchaseAccountId("");
       setDefaultTaxTreatment("vatable");
       setDefaultPurchaseCategory("");
+      setDefaultPriceEntryMode("vat_exclusive");
+      setDefaultEwtRateId("");
     }
     setNameError("");
     setPriceError("");
@@ -202,6 +217,8 @@ export default function ItemFormDrawer({
         default_tax_treatment: defaultTaxTreatment,
         default_purchase_category:
           (defaultPurchaseCategory as PurchaseCategory) || null,
+        default_price_entry_mode: defaultPriceEntryMode,
+        default_ewt_rate_id: defaultEwtRateId || null,
       };
 
       if (isEditMode) {
@@ -214,6 +231,8 @@ export default function ItemFormDrawer({
           default_purchase_account_id: editItem!.default_purchase_account_id,
           default_tax_treatment: editItem!.default_tax_treatment,
           default_purchase_category: editItem!.default_purchase_category,
+          default_price_entry_mode: editItem!.default_price_entry_mode,
+          default_ewt_rate_id: editItem!.default_ewt_rate_id,
         };
 
         await updateItem(editItem!.id, payload);
@@ -583,6 +602,58 @@ export default function ItemFormDrawer({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Default Price Entry Mode */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Price Entry Mode
+            </label>
+            <select
+              value={defaultPriceEntryMode}
+              onChange={(e) =>
+                setDefaultPriceEntryMode(e.target.value as PriceEntryMode)
+              }
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              {(
+                Object.entries(PRICE_ENTRY_MODE_LABELS) as [
+                  PriceEntryMode,
+                  string,
+                ][]
+              ).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-1">
+              How the unit price is entered on transactions — VAT exclusive
+              (price + VAT) or VAT inclusive (VAT already in price).
+            </p>
+          </div>
+
+          {/* Default EWT Rate */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Default EWT Rate
+            </label>
+            <select
+              value={defaultEwtRateId}
+              onChange={(e) => setDefaultEwtRateId(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">None (not subject to EWT)</option>
+              {ewtRates.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.category_name} ({r.rate}%)
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-1">
+              If set, this item will have EWT automatically computed on
+              transactions. Configure rates in Settings &gt; Tax Configuration.
+            </p>
           </div>
 
           {/* Default Purchase Category */}

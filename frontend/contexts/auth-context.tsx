@@ -114,6 +114,7 @@ async function fetchAuthUser(authUserId: string): Promise<AuthUser | null> {
       email: entityResult.data.email,
       businessType: entityResult.data.business_type,
       isSetupMode: entityResult.data.is_setup_mode,
+      defaultCashSaleNoCustomer: entityResult.data.default_cash_sale_no_customer ?? false,
       createdAt: entityResult.data.created_at,
       updatedAt: entityResult.data.updated_at,
     },
@@ -148,14 +149,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get the current session
     supabase.auth
       .getSession()
-      .then(async ({ data: { session } }) => {
+      .then(async ({ data: { session } }: { data: { session: Session | null } }) => {
         setSession(session);
         if (session?.user) {
           const authUser = await fetchAuthUser(session.user.id);
           setAuthUser(authUser);
         }
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error("Failed to get session:", err);
       })
       .finally(() => {
@@ -167,7 +168,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Listen for auth changes (login, logout, token refresh)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
       setSession(session);
       if (session?.user) {
         try {

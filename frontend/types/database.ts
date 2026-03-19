@@ -20,6 +20,7 @@ export interface Entity {
   email: string | null;
   businessType: "sole_proprietor" | "partnership" | "corporation";
   isSetupMode: boolean;
+  defaultCashSaleNoCustomer: boolean;
   createdAt: string;
   updatedAt: string;
 }

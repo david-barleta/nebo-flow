@@ -2,24 +2,24 @@
 
 import { useEffect } from "react";
 import { useBreadcrumb } from "@/contexts/breadcrumb-context";
-import DocumentNumberingPage from "@/components/settings/document-numbering/document-numbering-page";
+import BankAccountsPage from "@/components/settings/bank-accounts/bank-accounts-page";
 
 export default function Page() {
   const { setBreadcrumb } = useBreadcrumb();
 
   useEffect(() => {
-    setBreadcrumb("Document Numbering", [
+    setBreadcrumb("Bank Accounts", [
       { label: "Settings" },
-      { label: "Document Numbering" },
+      { label: "Bank Accounts" },
     ]);
   }, [setBreadcrumb]);
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900 font-[family-name:var(--font-raleway)]">
-        Document Numbering
+        Bank Accounts
       </h1>
-      <DocumentNumberingPage />
+      <BankAccountsPage />
     </div>
   );
 }

@@ -13,12 +13,15 @@ import { deriveVatRate } from "@/lib/items/types";
  */
 export interface ItemSelectionResult {
   item_id: string | null;
+  item_type: "product" | "service" | null;
   description: string | null;
   unit_price: number | null;
   account_id: string | null;
   tax_treatment: string;
   vat_rate: number;
   purchase_category: string | null;
+  price_entry_mode: string;
+  ewt_rate_id: string | null;
 }
 
 type TransactionContext = "sale" | "purchase";
@@ -103,6 +106,7 @@ export default function ItemSelect({
 
     onSelect({
       item_id: item.id,
+      item_type: item.item_type,
       description: item.description,
       unit_price: item.default_unit_price,
       account_id: accountId,
@@ -110,6 +114,8 @@ export default function ItemSelect({
       vat_rate: deriveVatRate(item.default_tax_treatment),
       purchase_category:
         context === "purchase" ? item.default_purchase_category : null,
+      price_entry_mode: item.default_price_entry_mode ?? "vat_exclusive",
+      ewt_rate_id: item.default_ewt_rate_id ?? null,
     });
     setOpen(false);
     setSearch("");
@@ -118,12 +124,15 @@ export default function ItemSelect({
   const handleClear = () => {
     onSelect({
       item_id: null,
+      item_type: null,
       description: null,
       unit_price: null,
       account_id: null,
       tax_treatment: "vatable",
       vat_rate: 12.0,
       purchase_category: null,
+      price_entry_mode: "vat_exclusive",
+      ewt_rate_id: null,
     });
     setOpen(false);
     setSearch("");
@@ -168,7 +177,17 @@ export default function ItemSelect({
       </div>
 
       {open && (
-        <div className="absolute z-20 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg max-h-64 overflow-hidden">
+        <div
+          className="fixed z-50 w-72 rounded-lg border border-gray-200 bg-white shadow-lg max-h-64 overflow-hidden"
+          style={{
+            top: containerRef.current
+              ? containerRef.current.getBoundingClientRect().bottom + 4
+              : 0,
+            left: containerRef.current
+              ? containerRef.current.getBoundingClientRect().left
+              : 0,
+          }}
+        >
           {/* Search */}
           <div className="p-2 border-b border-gray-100">
             <div className="relative">

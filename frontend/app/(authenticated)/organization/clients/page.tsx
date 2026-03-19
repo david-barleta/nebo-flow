@@ -54,7 +54,7 @@ export default function ClientsPage() {
       .eq("entity_id", authUser.entity.id)
       .eq("entity_key", "clients")
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: { data: { custom_label: string } | null }) => {
         if (data?.custom_label) setPageTitle(data.custom_label);
       });
   }, [authUser]);
