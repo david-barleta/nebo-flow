@@ -8,7 +8,8 @@ export type SystemAccountKey =
   | "accounts_payable"
   | "output_vat"
   | "input_vat"
-  | "creditable_withholding_tax";
+  | "creditable_withholding_tax"
+  | "ewt_payable";
 
 export interface SystemAccountMapping {
   id: string;
@@ -35,6 +36,7 @@ export const SYSTEM_ACCOUNT_LABELS: Record<SystemAccountKey, string> = {
   output_vat: "Output VAT",
   input_vat: "Input VAT",
   creditable_withholding_tax: "Creditable Withholding Tax",
+  ewt_payable: "EWT Payable",
 };
 
 export const SYSTEM_ACCOUNT_DESCRIPTIONS: Record<SystemAccountKey, string> = {
@@ -50,6 +52,8 @@ export const SYSTEM_ACCOUNT_DESCRIPTIONS: Record<SystemAccountKey, string> = {
     "Debited for VAT paid on purchases.",
   creditable_withholding_tax:
     "Debited for expanded withholding tax (EWT) withheld by customers on sales. Used as a tax credit.",
+  ewt_payable:
+    "Credited when the entity withholds EWT from suppliers on purchases. Represents the liability to remit to the BIR.",
 };
 
 export const SYSTEM_ACCOUNT_ORDER: SystemAccountKey[] = [
@@ -59,6 +63,7 @@ export const SYSTEM_ACCOUNT_ORDER: SystemAccountKey[] = [
   "output_vat",
   "input_vat",
   "creditable_withholding_tax",
+  "ewt_payable",
 ];
 
 /** The expected account_type for each mapping key */
@@ -69,4 +74,5 @@ export const SYSTEM_ACCOUNT_EXPECTED_TYPE: Record<SystemAccountKey, string> = {
   output_vat: "liability",
   input_vat: "asset",
   creditable_withholding_tax: "asset",
+  ewt_payable: "liability",
 };

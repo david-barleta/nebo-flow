@@ -112,6 +112,7 @@ export async function resolveSystemAccount(
       output_vat: "Output VAT",
       input_vat: "Input VAT",
       creditable_withholding_tax: "Creditable Withholding Tax",
+      ewt_payable: "EWT Payable",
     };
     throw new Error(
       `System account "${labels[mappingKey] ?? mappingKey}" is not configured. Go to Settings > System Accounts to set it up.`

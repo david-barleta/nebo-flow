@@ -88,10 +88,16 @@ export default function ItemSelect({
   }, [open]);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return items;
-    const q = search.toLowerCase();
-    return items.filter((i) => i.name.toLowerCase().includes(q));
-  }, [items, search]);
+    let list = items;
+    if (context === "purchase") {
+      list = list.filter((i) => i.item_type !== "service");
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter((i) => i.name.toLowerCase().includes(q));
+    }
+    return list;
+  }, [items, search, context]);
 
   const selectedItem = useMemo(
     () => (value ? items.find((i) => i.id === value) ?? null : null),

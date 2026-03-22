@@ -7,7 +7,7 @@ export type NumberingMode = "manual" | "auto";
 export type DocumentType =
   | "sales_invoice"
   | "official_receipt"
-  | "check_voucher"
+  | "disbursement_voucher"
   | "purchase_voucher"
   | "journal_entry";
 
@@ -27,7 +27,7 @@ export interface DocumentSequence {
 export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   sales_invoice: "Sales Invoice",
   official_receipt: "Official Receipt",
-  check_voucher: "Check Voucher",
+  disbursement_voucher: "Disbursement Voucher",
   purchase_voucher: "Purchase Voucher",
   journal_entry: "Journal Entry",
 };
@@ -35,7 +35,7 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
 export const DOCUMENT_TYPE_ORDER: DocumentType[] = [
   "sales_invoice",
   "official_receipt",
-  "check_voucher",
+  "disbursement_voucher",
   "purchase_voucher",
   "journal_entry",
 ];
